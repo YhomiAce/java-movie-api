@@ -1,11 +1,16 @@
 package com.ace.movie_api.service;
 
 import com.ace.movie_api.dto.MovieDto;
+import com.ace.movie_api.dto.MoviePageResponse;
 import com.ace.movie_api.entities.Movie;
 import com.ace.movie_api.exceptions.MovieNotFoundException;
 import com.ace.movie_api.mappers.MovieMapper;
 import com.ace.movie_api.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -137,5 +142,43 @@ public class MovieServiceImpl implements MovieService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public MoviePageResponse getPaginatedMovies(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Movie> moviePages = movieRepository.findAll(pageable);
+        List<Movie> movies = moviePages.getContent();
+        List<MovieDto> movieDtos = movies.stream().map(movie -> {
+            return MovieMapper.mapMovieToDto(movie, getPosterUrl(movie.getPoster()));
+        }).collect(Collectors.toList());
+        return new MoviePageResponse(
+                movieDtos,
+                pageNumber,
+                pageSize,
+                moviePages.getTotalElements(),
+                moviePages.getTotalPages(),
+                moviePages.isLast()
+        );
+    }
+
+    @Override
+    public MoviePageResponse getAllMoviesWithPaginationAndSorting(Integer pageNumber, Integer pageSize, String sortBy, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Movie> moviePage = movieRepository.findAll(pageable);
+        List<Movie> movies = moviePage.getContent();
+        List<MovieDto> movieDtos = movies.stream().map(movie -> {
+            return MovieMapper.mapMovieToDto(movie, getPosterUrl(movie.getPoster()));
+        }).collect(Collectors.toList());
+
+        return new MoviePageResponse(
+                movieDtos,
+                pageNumber,
+                pageSize,
+                moviePage.getTotalElements(),
+                moviePage.getTotalPages(),
+                moviePage.isLast()
+        );
     }
 }

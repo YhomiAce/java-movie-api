@@ -1,8 +1,10 @@
 package com.ace.movie_api.controllers;
 
 import com.ace.movie_api.dto.MovieDto;
+import com.ace.movie_api.dto.MoviePageResponse;
 import com.ace.movie_api.exceptions.EmptyFileException;
 import com.ace.movie_api.service.MovieService;
+import com.ace.movie_api.utils.AppConstants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -62,5 +64,24 @@ public class MovieController {
         response.put("status", 200);
         response.put("message", message);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/all-movies")
+    public ResponseEntity<MoviePageResponse> getAllMovies(
+            @RequestParam(defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer page,
+            @RequestParam(defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize
+    ) {
+        return ResponseEntity.ok(movieService.getPaginatedMovies(page, pageSize));
+    }
+
+
+    @GetMapping("/all-movies/sort")
+    public ResponseEntity<MoviePageResponse> getAllMoviesWithSort(
+            @RequestParam(defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer page,
+            @RequestParam(defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(defaultValue = AppConstants.SORT_BY, required = false) String sortBy,
+            @RequestParam(defaultValue = AppConstants.SORT_DIRECTION, required = false) String sortDirection
+    ) {
+        return ResponseEntity.ok(movieService.getAllMoviesWithPaginationAndSorting(page, pageSize, sortBy, sortDirection));
     }
 }
