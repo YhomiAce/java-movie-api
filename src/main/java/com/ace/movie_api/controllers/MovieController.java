@@ -1,6 +1,7 @@
 package com.ace.movie_api.controllers;
 
 import com.ace.movie_api.dto.MovieDto;
+import com.ace.movie_api.exceptions.EmptyFileException;
 import com.ace.movie_api.service.MovieService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,8 +24,11 @@ public class MovieController {
     }
 
     @PostMapping("/add-movie")
-    public ResponseEntity<MovieDto> addMovie(@RequestPart MultipartFile file, @RequestPart MovieDto movieDto) throws JsonProcessingException {
+    public ResponseEntity<MovieDto> addMovie(@RequestPart MultipartFile file, @RequestPart MovieDto movieDto) throws JsonProcessingException, EmptyFileException {
 //        MovieDto movieDto = convertToMovieDto(movieDtoObj);
+        if(file.isEmpty()){
+            throw new EmptyFileException("File is empty! Please send a file");
+        }
         System.out.println(movieDto.getDirector());
         return new ResponseEntity<>(movieService.addMovie(movieDto, file), HttpStatus.CREATED);
     }
