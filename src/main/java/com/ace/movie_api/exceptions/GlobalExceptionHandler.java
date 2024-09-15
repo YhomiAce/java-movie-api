@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
     }
     @ExceptionHandler
-    public ProblemDetail handleException(Exception e) {
+    public ProblemDetail handleRuntimeException(RuntimeException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 }

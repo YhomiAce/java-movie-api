@@ -63,10 +63,14 @@ public class UserEntity implements UserDetails {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-//    private boolean isEnabled;
-//    private boolean isAccountNonExpired;
-//    private boolean isAccountNonLocked;
-//    private boolean isCredentialsNonExpired;
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    private ForgotPassword forgotPassword;
+
+    private boolean isEnabled;
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isCredentialsNonExpired;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

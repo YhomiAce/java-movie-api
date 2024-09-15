@@ -1,7 +1,7 @@
 spring:
   datasource:
-    username: root
-    password: 6969
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     url: jdbc:mysql://localhost:3306/movies_db
   jpa:
     hibernate:
@@ -10,6 +10,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 project:
   poster: posters/
