@@ -16,3 +16,8 @@ project:
 
 base:
   url: "http://localhost:8080"
+jwt:
+  access-token-key: eafab511d502a1a72edcfa2e1f052a212264d00310534bbd1fffba98e0c03c76
+  access-token-expiration-time: 3600000
+  refresh-token-key: f2a1413e8170322f8a0975ce13b9a99baeb059039c6fe6d911fdd87cbfdfbad2
+  refresh-token-expiration-time: 4800000
